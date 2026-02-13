@@ -1,0 +1,162 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="dashboard-container fade-in">
+    <header class="dashboard-header">
+        <div>
+            <h2>Welcome back, {{ user.name }}!</h2>
+            <p>Here's your daily nutrition overview.</p>
+        </div>
+        <div class="today-date">
+            {{ logs[-1].date.strftime('%B %d, %Y') if logs else 'Today' }}
+        </div>
+    </header>
+
+    <div style="display: flex; justify-content: flex-end; gap: 1rem; margin-bottom: 2rem;">
+        <a href="{{ url_for('ai_coach', user_id=user.id) }}" class="btn btn-sm"
+            style="font-size: 1rem; padding: 0.8rem 1.5rem; background: var(--gradient-main);">
+            <i class="fas fa-magic"></i> Talk to AI Coach
+        </a>
+        <a href="{{ url_for('result', user_id=user.id) }}" class="btn btn-sm btn-secondary"
+            style="font-size: 1rem; padding: 0.8rem 1.5rem;">View Full Meal Plan</a>
+    </div>
+
+    <div class="dashboard-grid">
+        <!-- Main Stats -->
+        <div class="stats-card glass">
+            <h3>Daily Calories</h3>
+            <div class="chart-container-large">
+                <canvas id="caloriesChart"></canvas>
+            </div>
+            <div class="stat-details">
+                <div class="burned">
+                    <span>Target</span>
+                    <strong>{{ recommendation.diet_plan.targets.calories }} kcal</strong>
+                </div>
+                <div class="consumed">
+                    <span>Consumed</span>
+                    <strong id="display-consumed">{{ logs[-1].calories_consumed if logs else 0 }} kcal</strong>
+                </div>
+            </div>
+        </div>
+
+        <div class="stats-card glass">
+            <h3>Nutrient Distribution</h3>
+            <div class="chart-container-large">
+                <canvas id="macrosChart"></canvas>
+            </div>
+            <div class="macros-legend">
+                <span class="dot protein"></span> Protein
+                <span class="dot carbs"></span> Carbs
+                <span class="dot fats"></span> Fats
+            </div>
+        </div>
+
+        <div class="stats-card glass water-card">
+            <h3>Hydration</h3>
+            <div class="water-visual-container">
+                <div class="water-visual">
+                    <div id="water-level" class="water-level"
+                        style="height: {{ (logs[-1].water_intake / 3.0 * 100) if logs else 0 }}%">
+                    </div>
+                    <div class="water-info">
+                        <i class="fas fa-tint"></i>
+                        <strong id="display-water">{{ logs[-1].water_intake if logs else 0 }}L</strong>
+                        <span>/ 3.0L Target</span>
+                    </div>
+                </div>
+            </div>
+            <button class="btn-sm" onclick="logWater()">+ Add 0.5L</button>
+        </div>
+    </div>
+
+    <div class="dashboard-grid second-tier">
+        <div class="stats-card glass small-card">
+            <h3>Current Weight</h3>
+            <div class="metric-display">
+                <span id="display-weight" class="main-metric">{{ logs[-1].weight if logs and logs[-1].weight else
+                    user.weight }}</span>
+                <span class="unit">kg</span>
+            </div>
+            <p class="trend-indicator positive">Updated today</p>
+        </div>
+        <div class="stats-card glass small-card">
+            <h3>BMI Status</h3>
+            <div class="metric-display">
+                <span id="display-bmi" class="main-metric">{{ logs[-1].bmi if logs and logs[-1].bmi else (user.weight /
+                    ((user.height / 100) ** 2)) | round(2) }}</span>
+            </div>
+            <p class="trend-indicator">Healthy Range</p>
+        </div>
+    </div>
+
+    <div class="section-title">
+        <h3>Health Progress Trends</h3>
+    </div>
+    <div class="trend-tabs">
+        <button class="tab-btn active" onclick="showTrend('calories')">Calories</button>
+        <button class="tab-btn" onclick="showTrend('weight')">Weight</button>
+        <button class="tab-btn" onclick="showTrend('bmi')">BMI</button>
+    </div>
+    <div class="trend-card glass">
+        <canvas id="trendChart"></canvas>
+    </div>
+    <div id="dashboard-data" data-user-id="{{ user.id }}"
+        data-daily-calories="{{ recommendation.diet_plan.targets.calories }}"
+        data-consumed-calories="{{ logs[-1].calories_consumed if logs else 0 }}"
+        data-protein="{{ recommendation.diet_plan.targets.protein_g }}"
+        data-carbs="{{ recommendation.diet_plan.targets.carbs_g }}"
+        data-fats="{{ recommendation.diet_plan.targets.fats_g }}" data-trend-labels='{{ trendLabels | tojson }}'
+        data-trend-calories='{{ trendCalories | tojson }}' data-trend-weight='{{ trendWeight | tojson }}'
+        data-trend-bmi='{{ trendBMI | tojson }}' style="display: none;">
+    </div>
+</div>
+
+<!-- Floating Chat Interface -->
+<div class="chat-toggle-btn" onclick="toggleChat()">
+    <i class="fas fa-comment-dots"></i>
+    <span class="chat-badge">1</span>
+</div>
+
+<div class="chat-widget premium-glass" id="chatWidget">
+    <div class="chat-header">
+        <div class="header-info">
+            <div class="bot-avatar">AI</div>
+            <div>
+                <h4>Nutrition Coach</h4>
+                <p>Online & ready to help</p>
+            </div>
+        </div>
+        <button class="close-chat" onclick="toggleChat()">&times;</button>
+    </div>
+    <div class="chat-body" id="chatBody">
+        <div class="chat-message bot">
+            Hello {{ user.name }}! I'm your personalized nutrition coach. You can ask me questions about your plan, log
+            your meals, or update your weight!
+        </div>
+    </div>
+    <div class="chat-input-area">
+        <input type="text" id="chatInput" placeholder="Type a message... (e.g. 'Log 500 calories')"
+            onkeypress="handleKeyPress(event)">
+        <button onclick="sendMessage()"><i class="fas fa-paper-plane"></i></button>
+    </div>
+</div>
+
+<!-- Data for JS -->
+<script>
+    const dataEl = document.getElementById('dashboard-data');
+    const userMacros = {
+        protein: parseFloat(dataEl.dataset.protein),
+        carbs: parseFloat(dataEl.dataset.carbs),
+        fats: parseFloat(dataEl.dataset.fats)
+    };
+    const dailyCalories = parseInt(dataEl.dataset.dailyCalories);
+    const consumedCalories = parseInt(dataEl.dataset.consumedCalories);
+    const userId = dataEl.dataset.userId;
+
+    const trendLabels = JSON.parse(dataEl.dataset.trendLabels);
+    const trendCalories = JSON.parse(dataEl.dataset.trendCalories);
+    const trendWeight = JSON.parse(dataEl.dataset.trendWeight);
+    const trendBMI = JSON.parse(dataEl.dataset.trendBMI);
+</script>
+{% endblock %}

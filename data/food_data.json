@@ -1,0 +1,112 @@
+[
+  {
+    "name": "Oatmeal with Berries",
+    "type": "Breakfast",
+    "calories": 300,
+    "protein": 10,
+    "carbs": 50,
+    "fats": 6,
+    "veg_nonveg": "Veg",
+    "tags": ["healthy", "diabetes_friendly", "weight_loss"],
+    "avoid_for": []
+  },
+  {
+    "name": "Scrambled Eggs with Toast",
+    "type": "Breakfast",
+    "calories": 350,
+    "protein": 20,
+    "carbs": 30,
+    "fats": 15,
+    "veg_nonveg": "Non-Veg",
+    "tags": ["healthy", "muscle_building"],
+    "avoid_for": ["heart_disease (if high cholesterol)"]
+  },
+  {
+    "name": "Grilled Chicken Salad",
+    "type": "Lunch",
+    "calories": 400,
+    "protein": 40,
+    "carbs": 10,
+    "fats": 20,
+    "veg_nonveg": "Non-Veg",
+    "tags": ["weight_loss", "muscle_building", "diabetes_friendly"],
+    "avoid_for": []
+  },
+  {
+    "name": "Quinoa and Black Bean Bowl",
+    "type": "Lunch",
+    "calories": 450,
+    "protein": 15,
+    "carbs": 70,
+    "fats": 10,
+    "veg_nonveg": "Veg",
+    "tags": ["healthy", "weight_gain", "diabetes_friendly"],
+    "avoid_for": []
+  },
+  {
+    "name": "Salmon with Asparagus",
+    "type": "Dinner",
+    "calories": 500,
+    "protein": 35,
+    "carbs": 10,
+    "fats": 30,
+    "veg_nonveg": "Non-Veg",
+    "tags": ["healthy", "muscle_building", "diabetes_friendly"],
+    "avoid_for": []
+  },
+  {
+    "name": "Vegetable Stir Fry with Tofu",
+    "type": "Dinner",
+    "calories": 350,
+    "protein": 20,
+    "carbs": 40,
+    "fats": 15,
+    "veg_nonveg": "Veg",
+    "tags": ["weight_loss", "healthy", "diabetes_friendly"],
+    "avoid_for": []
+  },
+  {
+    "name": "Greek Yogurt with Honey",
+    "type": "Snack",
+    "calories": 150,
+    "protein": 12,
+    "carbs": 20,
+    "fats": 0,
+    "veg_nonveg": "Veg",
+    "tags": ["healthy", "weight_loss"],
+    "avoid_for": ["diabetes (use less honey)"]
+  },
+  {
+    "name": "Almonds and Walnuts",
+    "type": "Snack",
+    "calories": 200,
+    "protein": 6,
+    "carbs": 6,
+    "fats": 18,
+    "veg_nonveg": "Veg",
+    "tags": ["healthy", "muscle_building", "diabetes_friendly"],
+    "avoid_for": []
+  },
+  {
+      "name": "Protein Shake",
+      "type": "Snack",
+      "calories": 120,
+      "protein": 25,
+      "carbs": 3,
+      "fats": 1,
+      "veg_nonveg": "Veg",
+      "tags": ["muscle_building", "weight_loss"],
+      "avoid_for": []
+  },
+  {
+      "name": "Paneer Butter Masala (Low Oil)",
+      "type": "Dinner",
+      "calories": 400,
+      "protein": 18,
+      "carbs": 15,
+      "fats": 30,
+      "veg_nonveg": "Veg",
+      "tags": ["weight_gain", "muscle_building"],
+      "avoid_for": ["obesity", "heart_disease"]
+  }
+]

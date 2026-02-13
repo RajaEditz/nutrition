@@ -1,0 +1,35 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="hero fade-in">
+    <h1>Your Optimized Health,<br>Powered by AI.</h1>
+    <p>
+        NutriAI uses advanced algorithms to analyze your biometrics and goals to craft the perfect daily nutrition plan.
+        Whether you want to build muscle, lose weight, or just live healthier.
+    </p>
+    <div>
+        <a href="{{ url_for('plan') }}" class="btn">Get Your Diet Plan <i class="fas fa-arrow-right"></i></a>
+    </div>
+
+    <div style="margin-top: 5rem; display: flex; gap: 2rem; justify-content: center; flex-wrap: wrap;">
+        <div class="card" style="width: 250px; text-align: center;">
+            <i class="fas fa-brain" style="font-size: 2rem; color: var(--primary); margin-bottom: 1rem;"></i>
+            <h3>Smart Analysis</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Calculates ideal calories & macros using metabolic
+                equations.</p>
+        </div>
+        <div class="card" style="width: 250px; text-align: center;">
+            <i class="fas fa-carrot" style="font-size: 2rem; color: var(--secondary); margin-bottom: 1rem;"></i>
+            <h3>Personalized</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Tailored to your dietary preferences and health
+                conditions.</p>
+        </div>
+        <div class="card" style="width: 250px; text-align: center;">
+            <i class="fas fa-chart-line" style="font-size: 2rem; color: #4ade80; margin-bottom: 1rem;"></i>
+            <h3>Goal Oriented</h3>
+            <p style="color: var(--text-muted); font-size: 0.9rem;">Specific strategies for Weight Loss, Gain, or
+                Maintenance.</p>
+        </div>
+    </div>
+</div>
+{% endblock %}

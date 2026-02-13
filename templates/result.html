@@ -1,0 +1,85 @@
+{% extends "layout.html" %}
+
+{% block content %}
+<div class="fade-in">
+    <div style="text-align: center; margin-bottom: 2rem;">
+        <h2>Your Personalized Nutrition Plan, {{ user.name }}</h2>
+        <p style="color: var(--text-muted);">Based on your goal: <span style="color: #fff; font-weight: bold;">{{
+                user.fitness_goal.replace('_', ' ').title() }}</span></p>
+    </div>
+
+    <!-- Metrics -->
+    <div class="metrics-grid">
+        <div class="metric-card delay-1 fade-in">
+            <div class="metric-label">BMI Score</div>
+            <div class="metric-value">{{ recommendation.bmi }}</div>
+            <div
+                style="color: {% if recommendation.bmi_status == 'Normal Weight' %}#4ade80{% else %}#FF6584{% endif %}; font-weight: 600;">
+                {{ recommendation.bmi_status }}
+            </div>
+        </div>
+        <div class="metric-card delay-1 fade-in">
+            <div class="metric-label">Daily Calories</div>
+            <div class="metric-value">{{ recommendation.tdee }}</div>
+            <div style="color: var(--text-muted); font-size: 0.8rem;">Target Intake</div>
+        </div>
+        <div class="metric-card delay-1 fade-in">
+            <div class="metric-label">Protein</div>
+            <div class="metric-value">{{ recommendation.diet_plan.targets.protein_g }}<span
+                    style="font-size: 1rem;">g</span></div>
+        </div>
+        <div class="metric-card delay-1 fade-in">
+            <div class="metric-label">Carbs</div>
+            <div class="metric-value">{{ recommendation.diet_plan.targets.carbs_g }}<span
+                    style="font-size: 1rem;">g</span></div>
+        </div>
+        <div class="metric-card delay-1 fade-in">
+            <div class="metric-label">Fats</div>
+            <div class="metric-value">{{ recommendation.diet_plan.targets.fats_g }}<span
+                    style="font-size: 1rem;">g</span></div>
+        </div>
+    </div>
+
+    <!-- Meal Plan -->
+    <h2 style="margin-bottom: 1.5rem;">Recommended Daily Plan</h2>
+    <div class="plan-grid">
+        {% for meal_type, food in recommendation.diet_plan.plan.items() %}
+        <div class="meal-card delay-2 fade-in">
+            <div class="meal-header">
+                <span style="font-weight: 700; color: var(--secondary);">{{ meal_type }}</span>
+                {% if food %}
+                <span
+                    style="font-size: 0.8rem; background: rgba(255,255,255,0.1); padding: 2px 8px; border-radius: 4px;">{{
+                    food.calories }} kcal</span>
+                {% endif %}
+            </div>
+            <div class="meal-body">
+                {% if food %}
+                <div class="food-name">{{ food.name }}</div>
+                <div style="font-size: 0.9rem; color: var(--text-muted); margin-bottom: 1rem;">
+                    {% for tag in food.tags %}
+                    <span style="margin-right: 5px;">#{{ tag }}</span>
+                    {% endfor %}
+                </div>
+                <div class="macros">
+                    <div class="macro-item">P: <span>{{ food.protein }}g</span></div>
+                    <div class="macro-item">C: <span>{{ food.carbs }}g</span></div>
+                    <div class="macro-item">F: <span>{{ food.fats }}g</span></div>
+                </div>
+                {% else %}
+                <div style="color: var(--text-muted); font-style: italic;">
+                    No suitable recommendation found based on your strict constraints. Try adjusting your preferences.
+                </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endfor %}
+    </div>
+
+    <div style="text-align: center; margin-top: 3rem; display: flex; gap: 1rem; justify-content: center;">
+        <a href="{{ url_for('dashboard', user_id=user.id) }}" class="btn">Go to Dashboard</a>
+        <a href="{{ url_for('plan') }}" class="btn"
+            style="background: transparent; border: 1px solid var(--primary);">Recalculate</a>
+    </div>
+</div>
+{% endblock %}

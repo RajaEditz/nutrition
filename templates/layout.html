@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NutriAI - Intelligent Nutrition</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    {% block head %}{% endblock %}
+</head>
+
+<body>
+    <nav class="container navbar">
+        <div class="logo">Nutri<span>AI</span></div>
+        <div>
+            <a href="{{ url_for('home') }}"
+                style="color: var(--text-main); text-decoration: none; margin-right: 20px;">Home</a>
+            {% if user %}
+            <a href="{{ url_for('dashboard', user_id=user.id) }}"
+                style="color: var(--text-main); text-decoration: none; margin-right: 20px;">Dashboard</a>
+            <a href="{{ url_for('ai_coach', user_id=user.id) }}"
+                style="color: var(--primary); text-decoration: none; font-weight: 600;">AI Coach</a>
+            {% endif %}
+        </div>
+    </nav>
+
+    <main class="container">
+        {% block content %}{% endblock %}
+    </main>
+
+    <footer style="text-align: center; padding: 2rem; color: var(--text-muted); margin-top: 3rem;">
+        <p>&copy; 2026 NutriAI. AI-Powered Nutrition Planning.</p>
+    </footer>
+    <!-- Chat Widget removed from layout to be handled in dashboard for cleaner logic -->
+
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+    <script>
+        const userId = "{{ user.id if user else '' }}"; // getting user id if available
+    </script>
+</body>
+
+</html>
